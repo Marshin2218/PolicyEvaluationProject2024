@@ -14,7 +14,7 @@ library(TSstudio)
 library(scales)
 
 #setwd for this file
-#setwd("/Daily AQI Data County")
+#setwd("")
 
 library(tidyverse)
 library(haven)
@@ -37,7 +37,7 @@ aqi_2018 <- read_csv("daily_aqi_by_county_2018.csv")
 aqi_2019 <- read_csv("daily_aqi_by_county_2019.csv")
 
 #annual data - read in
-setwd("Annual AQI Data")
+#setwd("")
 aqi_2013_ann <- read_csv("annual_conc_by_monitor_2013.csv")
 aqi_2014_ann <- read_csv("annual_conc_by_monitor_2014.csv")
 aqi_2015_ann <- read_csv("annual_conc_by_monitor_2015.csv")
@@ -144,11 +144,12 @@ aqi_daily_joined_unique <- aqi_daily_joined %>% distinct(`Defining Site`, .keep_
 
 
 #Looking at list of sites and which parameter they have the most of
-aqi_dta %>% group_by(`Defining Site`, `Defining Parameter`) %>% summarize( n = n())
+aqi_dta %>% group_by(`Defining Site`, `Defining Parameter`) %>% dplyr::summarize( n = n())
 
 #Combining AQI daily with Unique site info *Note that we found out that not all AQI summary pollutants are calculated at each site
 
 #setwd for this file
+#setwd("")
 UniqueSites_Info_AQI_daily <- read_csv("UniqueSites_Info_AQI_daily_update2.csv")
 aqi_daily_joined <- left_join(aqi_daily_joined, UniqueSites_Info_AQI_daily, by = "Defining Site")
 
@@ -173,11 +174,11 @@ AllSiteinfo <- aqi_daily_joined %>% distinct(`Defining Site`, .keep_all = T)
 
 #aqi_daily_joinedpm <- aqi_daily_joined #%>% filter(`Defining Parameter` == "PM2.5")
 
-#aqi_daily_joinedpm %>% group_by(`Defining Site`, year) %>% summarize(n =n())
+#aqi_daily_joinedpm %>% group_by(`Defining Site`, year) %>% dplyr::summarize(n =n())
 #36-061-0079 - has very low number of readings across the years
 #36-081-0125 only has 2017 and 2018 - only one that doesn't have data for all 7 years (when it comes to PM2.5)
 
-aqi_uniqueSitebyDate <- aqi_daily_joined %>% group_by(`Defining Site`, year) %>% summarize(n =n())
+aqi_uniqueSitebyDate <- aqi_daily_joined %>% group_by(`Defining Site`, year) %>% dplyr::summarize(n =n())
 #unique(aqi_uniqueSitebyDate$`Defining Site`)
 #can see that 0067 (from Long Island) does not appear on this PM.25 list
 aqi_uniqueSitebyDate
@@ -227,7 +228,7 @@ Good34 <- c(201, 205, 211, 301, 309310, 404406, 501502, 503504, 105106107)
 Good42 <- c(103, 107, 201, 205, 211, 301, 309, 406, 501, 503)
 
 #get monthly averages per neighborhood by year, plot them
-uh34pldata <- aqi_daily_joined %>% group_by(year, month, uhf34code,uhf34nhood) %>% summarize(avgMthAQI = mean(AQI)) #figure out how to keep other columns later
+uh34pldata <- aqi_daily_joined %>% group_by(year, month, uhf34code,uhf34nhood) %>% dplyr::summarize(avgMthAQI = mean(AQI)) #figure out how to keep other columns later
 uh34pldata <- uh34pldata %>% filter(`uhf34code` %in% Good34)
 uh34mthaqiall <- ggplot(data = uh34pldata, mapping = aes(x = month, y = avgMthAQI, col = as.factor(uhf34code))) +
   geom_line() + geom_point()+ 
@@ -239,7 +240,7 @@ ggsave("mnthaqiuh34.png", uh34mthaqiall)
 
 
 #get monthly averages per neighborhood by year, plot them
-uh42pldata <- aqi_daily_joined %>% group_by(year, month, uhf42code,uhf42nhood) %>% summarize(avgMthAQI = mean(AQI)) #figure out how to keep other columns later
+uh42pldata <- aqi_daily_joined %>% group_by(year, month, uhf42code,uhf42nhood) %>% dplyr::summarize(avgMthAQI = mean(AQI)) #figure out how to keep other columns later
 uh42pldata <- uh42pldata %>% filter(`uhf42code` %in% Good42)
 uh42mthaqiall <- ggplot(data = uh42pldata, mapping = aes(x = month, y = avgMthAQI, col = as.factor(uhf42code))) +
   geom_point()+ geom_line() +
@@ -250,7 +251,7 @@ ggsave("mnthaqiuh42.png", uh42mthaqiall)
 
 
 #get monthly averages per neighborhood by year, plot them
-uh34pldata2 <- aqi_daily_joined %>% group_by(year, month, uhf34code) %>% summarize(avgMthAQI = mean(AQI)) #figure out how to keep other columns later
+uh34pldata2 <- aqi_daily_joined %>% group_by(year, month, uhf34code) %>% dplyr::summarize(avgMthAQI = mean(AQI)) #figure out how to keep other columns later
 uh34pldata2_201 <- uh34pldata %>% filter(uhf34code==201)
 ggplot(data = uh34pldata2_201, mapping = aes(x = as.factor(month), y = avgMthAQI, group = 1)) +
   geom_line(col = 'red') + geom_point(col = 'red')+
@@ -333,9 +334,9 @@ ggplot(data = uh34pldata2_100s, mapping = aes(x = as.factor(month), y = avgMthAQ
 #get monthly averages per neighborhood by year, plot them
 #uh42pldata2 <- uh42pldata %>% filter(`uhf42code` %in% Good42)
 
-uh42pldata2 <- aqi_daily_joined %>% group_by(year, month, uhf42code) %>% summarize(avgMthAQI = mean(AQI)) %>% filter(`uhf42code` %in% Good42) 
+uh42pldata2 <- aqi_daily_joined %>% group_by(year, month, uhf42code) %>% dplyr::summarize(avgMthAQI = mean(AQI)) %>% filter(`uhf42code` %in% Good42) 
 
-uh42pldata2yearavg <- aqi_daily_joined %>% group_by(year,uhf42code) %>% summarize(avgMthAQI = mean(AQI)) %>% filter(`uhf42code` %in% Good42)
+uh42pldata2yearavg <- aqi_daily_joined %>% group_by(year,uhf42code) %>% dplyr::summarize(avgMthAQI = mean(AQI)) %>% filter(`uhf42code` %in% Good42)
 
 uh42pldata2yearavg_meantab <- uh42pldata2yearavg %>% pivot_wider(names_from = uhf42code, names_prefix="UHF42_", values_from = avgMthAQI)
 uh42pldata2yearavg_meantab <- kable(uh42pldata2yearavg_meantab)
@@ -1430,7 +1431,7 @@ pm25_daily_joined24h <- pm25_daily_joined24h %>%
 
 
 #get monthly averages per neighborhood by year, plot them
-uh34pldatapm <- pm25_daily_joined24h %>% group_by(year, month, uhf34code) %>% summarize(avgMthPM2.5 = mean(`meanPOC`))
+uh34pldatapm <- pm25_daily_joined24h %>% group_by(year, month, uhf34code) %>% dplyr::summarize(avgMthPM2.5 = mean(`meanPOC`))
 uh34pldatapm <- uh34pldatapm %>% filter(`uhf34code` %in% Good34)
 uh34mthpmall <- ggplot(data = uh34pldatapm, mapping = aes(x = month, y = avgMthPM2.5, col = as.factor(uhf34code))) +
   geom_point()+ geom_line() +
@@ -1439,7 +1440,7 @@ uh34mthpmall <- ggplot(data = uh34pldatapm, mapping = aes(x = month, y = avgMthP
 uh34mthpmall
 #ggsave("mnthpmuh34.png", uh34mthpmall) 
 
-uh42pldatapm <- pm25_daily_joined24h %>% group_by(year, month, uhf42code) %>% summarize(avgMthPM2.5 = mean(`meanPOC`))
+uh42pldatapm <- pm25_daily_joined24h %>% group_by(year, month, uhf42code) %>% dplyr::summarize(avgMthPM2.5 = mean(`meanPOC`))
 uh42pldatapm <- uh42pldatapm %>% filter(`uhf42code` %in% Good42)
 uh42mthpmall <- ggplot(data = uh42pldatapm, mapping = aes(x = month, y = avgMthPM2.5, col = as.factor(uhf42code))) +
   geom_point()+ geom_line() +
@@ -1482,7 +1483,7 @@ unique(pm25_daily_joined1hr$`Defining Site`)
 
 
 #Getting yearly averages
-uh42pm25_data2yearavg <- pm25_daily_joined24h %>% group_by(year,uhf42code) %>% summarize(avgMthAQI = mean(AQI)) %>% filter(`uhf42code` %in% Good42)
+uh42pm25_data2yearavg <- pm25_daily_joined24h %>% group_by(year,uhf42code) %>% dplyr::summarize(avgMthAQI = mean(AQI)) %>% filter(`uhf42code` %in% Good42)
 
 uh42pm25_data2yearavg_meantab <- uh42pm25_data2yearavg %>% 
   pivot_wider(names_from = uhf42code, names_prefix="UHF42_", values_from = avgMthAQI)
@@ -1500,7 +1501,7 @@ uh42pm25_data2yearavgplt
 
 #UHF42
 #get monthly averages per neighborhood by year, plot them
-uh42pmdata <- pm25_daily_joined24h %>% group_by(year, month, uhf42code) %>% summarize(avgMthPM.5 = mean(meanPOC)) #figure out how to keep other columns later
+uh42pmdata <- pm25_daily_joined24h %>% group_by(year, month, uhf42code) %>% dplyr::summarize(avgMthPM.5 = mean(meanPOC)) #figure out how to keep other columns later
 uh42pmdata2_103 <- uh42pmdata %>% filter(uhf42code==103)
 uhf42mthpm2103 <- ggplot(data = uh42pmdata2_103, mapping = aes(x = as.factor(month), y = avgMthPM.5, group = 1)) +
   geom_point(col = 'red')+ geom_line(col = 'red') +
@@ -1590,14 +1591,14 @@ infmort <- infmort %>% mutate(uhf42code = case_when(V1 == "Hunts Point" | V1 == 
 
 
 infmort <- infmort %>% filter(uhf42code != "No UHF")
-infmort <-infmort %>%  select(V1, V2,V4, Geodsc,uhf42code )
+infmort <-infmort %>%  dplyr::select(V1, V2,V4, Geodsc,uhf42code )
 infmort <- as_tibble(infmort)
 infmort <- infmort %>% mutate(V2 = as.numeric(V2),
                               V4 = as.numeric(V4))
 infmort <- infmort %>% rename(year = V2,
                               rate = V4)
 
-infmort <- infmort %>% group_by(year,uhf42code) %>% summarize(rate = mean(rate))
+infmort <- infmort %>% group_by(year,uhf42code) %>% dplyr::summarize(rate = mean(rate))
 
 infmortplt <- ggplot(data = infmort, mapping = aes(x = as.factor(year), y = rate, group = 1, color = uhf42code)) +
   geom_point()+ geom_line() +
@@ -1628,14 +1629,14 @@ preterm <- preterm %>% mutate(uhf42code = case_when(V1 == "Hunts Point" | V1 == 
 
 
 preterm <- preterm %>% filter(uhf42code != "No UHF")
-preterm <-preterm %>%  select(V1, V2,V4, Geodsc,uhf42code )
+preterm <-preterm %>%  dplyr::select(V1, V2,V4, Geodsc,uhf42code )
 preterm <- as_tibble(preterm)
 preterm <- preterm %>% mutate(V2 = as.numeric(V2),
                               V4 = as.numeric(V4))
 preterm <- preterm %>% rename(year = V2,
                               rate = V4)
 
-preterm <- preterm %>% group_by(year,uhf42code) %>% summarize(rate = mean(rate))
+preterm <- preterm %>% group_by(year,uhf42code) %>% dplyr::summarize(rate = mean(rate))
 
 pretermplt <- ggplot(data = preterm, mapping = aes(x = as.factor(year), y = rate, group = 1, color = uhf42code)) +
   geom_point()+ geom_line() +
@@ -1666,14 +1667,14 @@ lowbw <- lowbw %>% mutate(uhf42code = case_when(V1 == "Hunts Point" | V1 == "Mot
 
 
 lowbw <- lowbw %>% filter(uhf42code != "No UHF")
-lowbw <-lowbw %>%  select(V1, V2,V4, Geodsc,uhf42code )
+lowbw <-lowbw %>%  dplyr::select(V1, V2,V4, Geodsc,uhf42code )
 lowbw <- as_tibble(lowbw)
 lowbw <- lowbw %>% mutate(V2 = as.numeric(V2),
                           V4 = as.numeric(V4))
 lowbw <- lowbw %>% rename(year = V2,
                           rate = V4)
 
-lowbw <- lowbw %>% group_by(year,uhf42code) %>% summarize(rate = mean(rate))
+lowbw <- lowbw %>% group_by(year,uhf42code) %>% dplyr::summarize(rate = mean(rate))
 
 lowbwplt <- ggplot(data = lowbw, mapping = aes(x = as.factor(year), y = rate, group = 1, color = uhf42code)) +
   geom_point()+ geom_line() +
@@ -1703,16 +1704,16 @@ livebirth <- livebirth %>% mutate(uhf42code = case_when(V1 == "Hunts Point" | V1
                                                         TRUE ~ "No UHF"))
 
 livebirth <- livebirth %>% filter(uhf42code != "No UHF")
-livebirth <-livebirth %>%  select(V1, V2, V3, V4, Geodsc,uhf42code )
+livebirth <-livebirth %>%  dplyr::select(V1, V2, V3, V4, Geodsc,uhf42code )
 livebirth <- as_tibble(livebirth)
 livebirth <- livebirth %>% mutate(V2 = as.numeric(V2),
                                   V4 = as.numeric(V4))
 livebirth <- livebirth %>% rename(year = V2,
                                   value = V4)
 
-livebirthnum <- livebirth %>% filter(V3 == "Number") %>%  group_by(year,uhf42code) %>% summarize(Number = mean(value))
+livebirthnum <- livebirth %>% filter(V3 == "Number") %>%  group_by(year,uhf42code) %>% dplyr::summarize(Number = mean(value))
 
-livebirthrate <- livebirth %>% filter(V3 == "Rate") %>%  group_by(year,uhf42code) %>% summarize(Rate = mean(value))
+livebirthrate <- livebirth %>% filter(V3 == "Rate") %>%  group_by(year,uhf42code) %>% dplyr::summarize(Rate = mean(value))
 
 
 livebirtratehplt <- ggplot(data = livebirthrate, mapping = aes(x = as.factor(year), y = Rate, group = 1, color = uhf42code)) +
@@ -1751,14 +1752,14 @@ LivebirthMom <- LivebirthMom %>% mutate(uhf42code = case_when(V1 == "Hunts Point
                                                               TRUE ~ "No UHF"))
 
 LivebirthMom <- LivebirthMom %>% filter(uhf42code != "No UHF")
-LivebirthMom <-LivebirthMom %>%  select(V1, V2, V3, V4, Geodsc,uhf42code )
+LivebirthMom <-LivebirthMom %>%  dplyr::select(V1, V2, V3, V4, Geodsc,uhf42code )
 LivebirthMom <- as_tibble(LivebirthMom)
 LivebirthMom <- LivebirthMom %>% mutate(V2 = as.numeric(V2),
                                         V4 = as.numeric(V4))
 LivebirthMom <- LivebirthMom %>% rename(year = V2,
                                         rate = V4)
 
-LivebirthMom <- LivebirthMom %>%  group_by(year,uhf42code) %>% summarize(rate = mean(rate))
+LivebirthMom <- LivebirthMom %>%  group_by(year,uhf42code) %>% dplyr::summarize(rate = mean(rate))
 
 LivebirthMomplt <- ggplot(data = LivebirthMom, mapping = aes(x = as.factor(year), y = rate, group = 1, color = uhf42code)) +
   geom_point()+ geom_line() +
